@@ -1,2 +1,2 @@
-# notes-app
+# Notes App
 Simple desktop notes application
