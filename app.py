@@ -1,11 +1,11 @@
-# First things, first. Import the wxPython package.
 import wx
 
-# Next, create an application object.
+from notes_app import ApplicationFrame
+
 app = wx.App()
 
-# Then a frame.
-frm = wx.Frame(None, title="Hello World")
+# Application main window
+frm = ApplicationFrame(None, title="Notes App")
 
 # Show it.
 frm.Show()
