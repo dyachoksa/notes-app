@@ -1,10 +1,18 @@
 import wx
 
+from .services import NotesService
+
 
 class ApplicationFrame(wx.Frame):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, notes_service: NotesService, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.notes_service = notes_service
+
+        self.setup_ui()
+        self.update_notes()
+
+    def setup_ui(self):
         self.SetSize(800, 600)
         self.SetMinSize(wx.Size(600, 500))
 
@@ -12,9 +20,6 @@ class ApplicationFrame(wx.Frame):
 
         self.notes_list_widget = wx.ListBox(panel, style=wx.LB_SINGLE)
         self.notes_list_widget.SetSelection(wx.NOT_FOUND)
-
-        # test item
-        self.notes_list_widget.Append("My Note")
 
         notes_sizer = wx.BoxSizer(wx.VERTICAL)
         notes_sizer.Add(self.notes_list_widget, 1, wx.EXPAND)
@@ -50,6 +55,10 @@ class ApplicationFrame(wx.Frame):
 
         self.CreateStatusBar()
         self.SetStatusText("Ready")
+
+    def update_notes(self):
+        for title in self.notes_service.get_titles():
+            self.notes_list_widget.Append(title)
 
     def on_info_btn_click(self, event):
         wx.InfoMessageBox(self)
