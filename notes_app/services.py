@@ -24,19 +24,51 @@ class NotesService:
 
     def save_notes(self):
         """Stores notes in JSON database file"""
-        pass
+        notes = [dict(id=note.id, title=note.title, content=note.content) for note in self.notes]
+
+        with open(self.database, "w") as f:
+            json.dump(notes, f, indent=2)
 
     def get_titles(self) -> typing.Iterator[str]:
         return map(lambda x: x.title, self.notes)
 
     def get_by_title(self, title: str) -> typing.Optional[Note]:
-        pass
+        for note in self.notes:
+            if note.title == title:
+                return note
+
+        return None
+
+    def get_by_id(self, note_id: int) -> typing.Optional[Note]:
+        for note in self.notes:
+            if note.id == note_id:
+                return note
+
+        return None
 
     def update(self, note: Note) -> bool:
+        org_note = self.get_by_id(note.id)
+
+        if org_note is None:
+            return False
+
+        idx = self.notes.index(org_note)
+
+        self.notes[idx] = note
+
+        self.save_notes()
+
         return True
 
-    def delete(self):
-        pass
+    def delete(self, note: Note):
+        org_note = self.get_by_id(note.id)
+
+        if org_note is None:
+            return
+
+        self.notes.remove(org_note)
+
+        self.save_notes()
 
     def create(self, title, content):
         pass
