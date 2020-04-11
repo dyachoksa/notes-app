@@ -60,7 +60,11 @@ class NotePanel(wx.Panel):
         self._note.title = self.title_widget.GetValue()
         self._note.content = self.text_widget.GetValue()
 
-        self.notes_service.update(self._note)
+        if self._note.id is None:
+            self.notes_service.create(self._note)
+        else:
+            self.notes_service.update(self._note)
+
         self.main_frame.update_notes()
 
         # evt = NoteUpdatedEvent(note=self._note)
@@ -91,6 +95,7 @@ class ApplicationFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.on_info_btn_click, info_btn)
 
         create_btn = wx.Button(panel, label="Create")
+        self.Bind(wx.EVT_BUTTON, self.on_note_add, create_btn)
 
         self.note_panel = NotePanel(self.notes_service, self, panel)
         self.Bind(EVT_NOTE_UPDATED, self.on_note_updated, self.note_panel)
@@ -132,6 +137,10 @@ class ApplicationFrame(wx.Frame):
         note_title = event.GetString()
         note = self.notes_service.get_by_title(note_title)
         self.note_panel.note = note
+
+    def on_note_add(self, event):
+        self.notes_list_widget.SetSelection(wx.NOT_FOUND)
+        self.note_panel.note = Note()
 
     def on_note_updated(self, event):
         print(event)

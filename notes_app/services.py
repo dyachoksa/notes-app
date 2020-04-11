@@ -1,5 +1,6 @@
 import json
 import typing
+from operator import attrgetter
 
 from .models import Note
 
@@ -70,5 +71,9 @@ class NotesService:
 
         self.save_notes()
 
-    def create(self, title, content):
-        pass
+    def create(self, new_note: Note):
+        new_id = max(self.notes, key=attrgetter('id')).id + 1
+        new_note.id = new_id
+        self.notes.append(new_note)
+
+        self.save_notes()
