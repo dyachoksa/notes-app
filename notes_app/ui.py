@@ -60,6 +60,10 @@ class NotePanel(wx.Panel):
         self._note.title = self.title_widget.GetValue()
         self._note.content = self.text_widget.GetValue()
 
+        if not self._note.title or not self._note.content:
+            alert = wx.MessageDialog(self, "Note can't be empty", "Warning", wx.OK | wx.ICON_EXCLAMATION)
+            return alert.ShowModal()
+
         if self._note.id is None:
             self.notes_service.create(self._note)
         else:
@@ -79,7 +83,11 @@ class ApplicationFrame(wx.Frame):
 
         self.setup_ui()
         self.update_notes()
-        self.set_active(0)
+
+        if self.notes_service.notes:
+            self.set_active(0)
+        else:
+            self.note_panel.note = Note()
 
     def setup_ui(self):
         self.SetSize(800, 600)

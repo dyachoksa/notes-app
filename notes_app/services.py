@@ -1,4 +1,5 @@
 import json
+import os
 import typing
 from operator import attrgetter
 
@@ -6,9 +7,25 @@ from .models import Note
 
 
 class NotesService:
-    def __init__(self, database: str = "notes.json"):
+    def __init__(self, database: str = None):
         self.notes: typing.List[Note] = []
+
+        # print("Working dir:", os.getcwd())
+        # print("App dir:", os.path.dirname(os.path.dirname(__file__)))
+
+        if database is None:
+            app_dir = os.path.dirname(os.path.dirname(__file__))
+            database = os.path.join(app_dir, "notes.json")
+
         self.database = database
+        self.check_database()
+
+    def check_database(self):
+        if os.path.exists(self.database):
+            return
+
+        with open(self.database, "w") as f:
+            json.dump([], f)
 
     def load_notes(self) -> typing.List[Note]:
         """Loads notes from JSON database file"""
@@ -72,7 +89,10 @@ class NotesService:
         self.save_notes()
 
     def create(self, new_note: Note):
-        new_id = max(self.notes, key=attrgetter('id')).id + 1
+        new_id = 1
+        if self.notes:
+            new_id = max(self.notes, key=attrgetter('id')).id + 1
+
         new_note.id = new_id
         self.notes.append(new_note)
 
