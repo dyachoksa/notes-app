@@ -1,7 +1,6 @@
 import wx
 
-from notes_app import ApplicationFrame
-from notes_app.services import NotesService
+from notes_app import ApplicationFrame, NotesService
 
 app = wx.App()
 
