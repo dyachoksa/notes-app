@@ -1,18 +1,25 @@
+import sys
+
 import wx
 
 from notes_app import ApplicationFrame, NotesService
 
-app = wx.App()
+if __name__ == "__main__":
+    app = wx.App()
 
-# service layer
-notes_service = NotesService()
-notes_service.load_notes()
+    database = None
+    if len(sys.argv) > 1:
+        database = sys.argv[1]
 
-# Application main window
-frm = ApplicationFrame(notes_service, None, title="Notes App")
+    # service layer
+    notes_service = NotesService(database)
+    notes_service.load_notes()
 
-# Show it.
-frm.Show()
+    # Application main window
+    frm = ApplicationFrame(notes_service, None, title="Notes App")
 
-# Start the event loop.
-app.MainLoop()
+    # Show it.
+    frm.Show()
+
+    # Start the event loop.
+    app.MainLoop()
